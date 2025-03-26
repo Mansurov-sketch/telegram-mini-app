@@ -10,7 +10,7 @@ const BOT_TOKEN = '7788845291:AAGYYHWPw09k0D7vD9r9c3yzBjIScGS7TUQ';
 // URL вашего Mini App
 const WEB_APP_URL = 'https://telegram-mini-app-3-0jjt.onrender.com';
 
-// URL вашего Render-сервера (установите как переменную окружения)
+// URL вашего Render-сервера
 const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL;
 
 // Настройка Telegraf
@@ -34,30 +34,31 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// API для админской панели (заглушка)
-app.get('/api/entries', (req, res) => {
-    res.json([
-        { text: 'Запись 1' },
-        { text: 'Запись 2' },
-    ]);
-});
-
 // Обработка webhook
 app.use(bot.webhookCallback(`/webhook/${BOT_TOKEN}`));
 
-// Запуск сервера
-app.listen(PORT, () => {
-    console.log(`Сервер запущен на порту ${PORT}`);
-});
-
-// Установка webhook
-if (RENDER_EXTERNAL_URL) {
-    bot.telegram.setWebhook(`${RENDER_EXTERNAL_URL}/webhook/${BOT_TOKEN}`)
-        .then(() => console.log('Webhook is set up'))
-        .catch(err => console.error('Error setting webhook:', err));
-} else {
-    console.warn('RENDER_EXTERNAL_URL is not set. Make sure to configure it in Render.');
+// Удаление существующего вебхука перед настройкой нового
+async function setupWebhook() {
+    try {
+        await bot.telegram.setWebhook('');
+        await bot.telegram.setWebhook(`${RENDER_EXTERNAL_URL}/webhook/${BOT_TOKEN}`);
+        console.log('Webhook is set up');
+    } catch (error) {
+        console.error('Error setting webhook:', error);
+    }
 }
 
+// Запуск сервера
+app.listen(PORT, async () => {
+    console.log(`Сервер запущен на порту ${PORT}`);
+    await setupWebhook();
+});
+
 // Запуск бота (Webhooks)
-bot.launch();
+bot.launch({
+    webhook: {
+        domain: RENDER_EXTERNAL_URL,
+        hookPath: `/webhook/${BOT_TOKEN}`,
+        port: PORT
+    }
+});
