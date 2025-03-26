@@ -34,6 +34,14 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// API для админской панели (заглушка)
+app.get('/api/entries', (req, res) => {
+    res.json([
+        { text: 'Запись 1' },
+        { text: 'Запись 2' },
+    ]);
+});
+
 // Запуск сервера
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);
