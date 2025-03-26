@@ -3,7 +3,7 @@ const path = require('path');
 const { Telegraf, Markup } = require('telegraf');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Используйте process.env.PORT, если он задан, иначе используйте 3000
 
 // Токен вашего бота от @BotFather
 const BOT_TOKEN = '7788845291:AAGYYHWPw09k0D7vD9r9c3yzBjIScGS7TUQ';
@@ -37,28 +37,33 @@ app.get('*', (req, res) => {
 // Обработка webhook
 app.use(bot.webhookCallback(`/webhook/${BOT_TOKEN}`));
 
-// Удаление существующего вебхука перед настройкой нового
+// Запуск сервера
+app.listen(PORT, () => { // Использовать переменную PORT для прослушивания
+    console.log(`Сервер запущен на порту ${PORT}`);
+});
+
+// Установка вебхука
 async function setupWebhook() {
     try {
-        await bot.telegram.setWebhook('');
-        await bot.telegram.setWebhook(`${RENDER_EXTERNAL_URL}/webhook/${BOT_TOKEN}`);
+        await bot.telegram.setWebhook(''); // Удалить существующий вебхук
+        await bot.telegram.setWebhook(`${RENDER_EXTERNAL_URL}/webhook/${BOT_TOKEN}`); // Установить новый вебхук
         console.log('Webhook is set up');
     } catch (error) {
         console.error('Error setting webhook:', error);
     }
 }
 
-// Запуск сервера
-app.listen(PORT, async () => {
-    console.log(`Сервер запущен на порту ${PORT}`);
-    await setupWebhook();
-});
-
-// Запуск бота (Webhooks)
-bot.launch({
-    webhook: {
-        domain: RENDER_EXTERNAL_URL,
-        hookPath: `/webhook/${BOT_TOKEN}`,
-        port: PORT
+// Запуск бота и установка вебхука
+(async () => {
+    try {
+        if (RENDER_EXTERNAL_URL) {
+            await setupWebhook();
+            console.log('Webhook setup completed.');
+        } else {
+            console.warn('RENDER_EXTERNAL_URL is not set. Make sure to configure it in Render.');
+        }
+        // bot.launch();
+    } catch (error) {
+        console.error('Error launching bot:', error);
     }
-});
+})();
