@@ -5,16 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личная карточка</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="card">
-        <h2>Личная карточка</h2>
-        <img id="userPhoto" src="" alt="Аватар пользователя">
-        <h3 id="userName">Имя пользователя</h3>
-        <p id="userId">ID: </p>
-    </div>
+    <div class="container">
+        <div class="card">
+            <h2>Личная карточка</h2>
+            <img id="userPhoto" src="" alt="Аватар пользователя">
+            <h3 id="userName">Имя пользователя</h3>
+            <p id="userId">ID: </p>
+        </div>
 
+        <div class="emotional-state">
+            <h2>Введение эмоционального состояния</h2>
+            <input id="emotionInput" type="text" placeholder="Введите эмоциональное состояние">
+            <button id="saveEmotion">Сохранить</button>
+            <button id="editEmotion">Редактировать</button>
+            <button id="deleteEmotion">Удалить</button>
+            <div id="emotionList"></div>
+        </div>
+
+        <div id="forecast"></div>
+
+        <div class="admin-panel">
+            <h2>Админская панель</h2>
+            <button id="loadEntries">Загрузить записи</button>
+            <div id="entriesList"></div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
