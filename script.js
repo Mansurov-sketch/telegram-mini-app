@@ -90,3 +90,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+async function sendMessageWithRetry(ctx, text) {
+  try {
+    await ctx.reply(text);
+  } catch (error) {
+    if (error.response && error.response.error_code === 429) {
+      const retryAfter = error.response.parameters.retry_after;
+      console.log(`Rate limited, retrying after ${retryAfter} seconds`);
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      await sendMessageWithRetry(ctx, text); // Retry
+    } else {
+      console.error("Error sending message:", error);
+    }
+  }
+}
+
+// Example usage:
+bot.command('start', (ctx) => {
+  sendMessageWithRetry(ctx, 'Welcome to the bot!');
+});
