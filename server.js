@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Используйте process.env.PORT, если он задан, иначе используйте 3000
 
 // Токен вашего бота от @BotFather
-const BOT_TOKEN = '7788845291:AAGYYHWPw09k0D7vD9r9c3yzBjIScGS7TUQ';
+const BOT_TOKEN = '';
 // URL вашего Mini App
 const WEB_APP_URL = 'https://telegram-mini-app-3-0jjt.onrender.com';
 
